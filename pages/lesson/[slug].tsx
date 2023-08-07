@@ -1,9 +1,8 @@
 import { useRouter } from 'next/router';
 import type { InferGetServerSidePropsType, GetServerSideProps } from 'next';
-import { LessonData, getLessonById, saveLesson } from '../util/lesson';
+import { LessonData, getLessonById, saveLesson } from '../../util/lesson';
 import { User, createPagesServerClient } from '@supabase/auth-helpers-nextjs';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
-
  
 export const getServerSideProps: GetServerSideProps<{lesson: LessonData, user: User}> = async (ctx) => {
   // await saveLesson({name: 'Quadratic Formula', description: 'A', transcript: 'A', summary: 'A', owner: 'Aayan'})

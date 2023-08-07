@@ -3,12 +3,14 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import { createGlobalStyle } from "styled-components";
 import { config, dom } from "@fortawesome/fontawesome-svg-core";
-// import NewLesson from './components/NewLesson';
+// import NewLesson from '@/components/NewLesson';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
-import NewLesson from './components/NewLesson';
-import Navbar from './components/Navbar';
+import NewLesson from '@/components/NewLesson';
+import Navbar from '@/components/Navbar';
+import { redirect } from 'next/dist/server/api-utils';
+import { useRouter } from 'next/router';
 
 // add fontawesome css
 
@@ -20,8 +22,10 @@ const GlobalStyles = createGlobalStyle`
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const supabaseClient = useSupabaseClient()
+  const supabaseClient = useSupabaseClient();
+  const router = useRouter();
   const user = useUser()
+
   // const [data, setData] = useState()
 
   return (
@@ -35,16 +39,18 @@ export default function Home() {
       </Head>
       <main className={`${styles.main} ${inter.className}`}>
         <div className='content-container'>
-          {user ? <Navbar /> : <></>}
+          {/* {user ? <Navbar /> : <></>} */}
+          <Navbar />
           <p className='title'>LessonLearned</p>
           <p className='subtitle'>Accessible learning in the classroom</p>
           {/* <NewLesson /> */}
-          {user ? <NewLesson /> : <Auth 
+          {/* {user ? <Dashboard /> : <Auth  */}
+          <Auth
             appearance={{ theme: ThemeSupa }}
             supabaseClient={supabaseClient}
             providers={[]}
-            redirectTo="http://localhost:3000/"
-          />}
+            redirectTo="/dashboard"
+          />
         </div>
       </main>
     </>

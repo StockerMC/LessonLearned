@@ -1,4 +1,4 @@
-import { SupabaseClient, createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { SupabaseClient, User, createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { randomUUID } from "crypto";
 
 interface Lesson {
@@ -39,4 +39,12 @@ export async function getLessonById(supabase: SupabaseClient, id: string) {
         .eq('id', id)
         .single();
     return { data, error };
+}
+
+export async function getLessonsForUser(supabase: SupabaseClient, user_id: string) {
+    const { data, error } = await supabase
+        .from('lessons')
+        .select('*')
+        .contains('users', [user_id])
+    return { data, error }
 }
