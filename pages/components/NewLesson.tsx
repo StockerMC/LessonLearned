@@ -45,6 +45,14 @@ export default function NewLesson() {
     }, [])
   
     const [inputLanguage, setInputLanguage] = useState(cookies['input-language'] ?? 'en-US');
+    useEffect(() => {
+      if (inputLanguage != 'en-US') {
+        console.log(inputLanguage)
+        // @ts-ignore
+        SpeechRecognition.removePolyfill();
+      }
+    }, []);
+
     const [translationLanguage, setTranslationLanguage] = useState(cookies['translation-language'] ?? 'en');
     const [translated, setTranslated] = useState('');
 
@@ -148,7 +156,7 @@ export default function NewLesson() {
           color="red"
           size="7x"
           style={{ cursor: 'pointer', flex: '1' }}
-          onClick={() => listening ? SpeechRecognition.stopListening() : SpeechRecognition.startListening({ continuous: true })}
+          onClick={() => listening ? SpeechRecognition.stopListening() : SpeechRecognition.startListening({ continuous: true, language: inputLanguage })}
         // widths={}
         />
       </div>
