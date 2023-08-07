@@ -1,5 +1,5 @@
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { randomUUID } from "crypto";
-import { supabase } from './supabaseClient'
 
 interface Lesson {
     name: string;
@@ -15,6 +15,7 @@ export interface LessonData extends Lesson {
 }
 
 export async function saveLesson(lesson: Lesson) {
+    const supabase = createClientComponentClient()
     const { data, error } = await supabase
         .from('lessons')
         .insert(lesson)
@@ -24,6 +25,7 @@ export async function saveLesson(lesson: Lesson) {
 }
 
 export async function getLessonById(id: string) {
+    const supabase = createClientComponentClient()
     const { data, error } = await supabase
         .from('lessons')
         .select('*')
