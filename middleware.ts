@@ -18,7 +18,7 @@ export async function middleware(req: NextRequest) {
 
     const redirectUrl = req.nextUrl.clone()
     redirectUrl.pathname = '/dashboard'
-    redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname)
+    // redirectUrl.searchParams.set(`redirectedFrom`, req.nextUrl.pathname)
     return NextResponse.redirect(redirectUrl)
 }
  

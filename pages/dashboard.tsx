@@ -5,7 +5,9 @@ import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
 import LessonPreviewCard from "@/components/LessonPreviewCard";
 import Head from "next/head";
 import { Inter } from "next/font/google";
-import Navbar from "@/components/Navbar";
+import HomeNavbar from "@/components/HomeNavbar";
+import { useRouter } from "next/router";
+import styles from '@/styles/Dashboard.module.css';
 
 // // add fontawesome css
 
@@ -23,7 +25,7 @@ export const getServerSideProps: GetServerSideProps<{lessons: LessonData[], user
     } = await supabase.auth.getSession()
   
     if (!session){
-    console.log('no session')
+        console.log('no session')
       return {
         redirect: {
           destination: '/',
@@ -45,6 +47,7 @@ export const getServerSideProps: GetServerSideProps<{lessons: LessonData[], user
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Dashboard({lessons, user}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+    const router = useRouter();
     return (
         <>
         {/* <GlobalStyles /> */}
@@ -54,20 +57,20 @@ export default function Dashboard({lessons, user}: InferGetServerSidePropsType<t
             <meta name="viewport" content="width=device-width, initial-scale=1" />
             <link rel="icon" href="/favicon.ico" />
         </Head>
-        <main className={`${inter.className}`}>
+        <main className={`${styles.main} ${inter.className}`}>
             <div className='content-container'>
             {/* {user ? <Navbar /> : <></>} */}
-            <Navbar />
+            <HomeNavbar />
             <p className='title'>LessonLearned</p>
             <p className='subtitle'>Accessible learning in the classroom</p>
             </div>
             <div>
-                <div className="flex row wrap">
-                    <button>Sort</button>
+                <div className={styles.lessonMenuButtons}>
+                    <button className={styles.button}>Sort</button>
                     {/* or just fontawesome plus icon */}
-                    <button>New +</button>
+                    <button className={styles.button} onClick={() => router.push('/lesson/new')}>New +</button>
                 </div>
-                <div className="flex row wrap">
+                <div className={styles.cardContainer}>
                     {lessons.map(lesson => <LessonPreviewCard lesson={lesson} key={lesson.id} />)}
                 </div>
             </div>

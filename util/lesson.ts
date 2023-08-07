@@ -1,7 +1,7 @@
 import { SupabaseClient, User, createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { randomUUID } from "crypto";
 
-interface Lesson {
+export interface Lesson {
     name: string;
     description: string;
     owner: string;
@@ -25,10 +25,13 @@ export async function saveLesson(supabase: SupabaseClient, lesson: Lesson) {
     return { data, error }
 }
 
-export async function saveLessonRecording(supabase: SupabaseClient, blob: Blob) {
-    const file = new File([blob], 'lesson.webm');
-    return ;
-
+export async function saveLessonRecording(supabase: SupabaseClient, blob: Blob, lesson_id: string) {
+    // const file = new File([blob]);
+    const { data, error } = await supabase
+        .storage
+        .from('lesson-recordings')
+        .upload(`${lesson_id}.webm`, blob)
+    return { data, error }
 }
 
 export async function getLessonById(supabase: SupabaseClient, id: string) {

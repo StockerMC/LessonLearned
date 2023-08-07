@@ -8,7 +8,7 @@ import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import NewLesson from '@/components/NewLesson';
-import Navbar from '@/components/Navbar';
+import HomeNavbar from '@/components/HomeNavbar';
 import { redirect } from 'next/dist/server/api-utils';
 import { useRouter } from 'next/router';
 
@@ -23,8 +23,13 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   const supabaseClient = useSupabaseClient();
+  const user = useUser();
   const router = useRouter();
-  const user = useUser()
+
+  if (user) {
+    router.push('/dashboard');
+    return <></>;
+  }
 
   // const [data, setData] = useState()
 
@@ -40,7 +45,6 @@ export default function Home() {
       <main className={`${styles.main} ${inter.className}`}>
         <div className='content-container'>
           {/* {user ? <Navbar /> : <></>} */}
-          <Navbar />
           <p className='title'>LessonLearned</p>
           <p className='subtitle'>Accessible learning in the classroom</p>
           {/* <NewLesson /> */}
@@ -49,7 +53,7 @@ export default function Home() {
             appearance={{ theme: ThemeSupa }}
             supabaseClient={supabaseClient}
             providers={[]}
-            redirectTo="/dashboard"
+            redirectTo="/api/auth/callback"
           />
         </div>
       </main>

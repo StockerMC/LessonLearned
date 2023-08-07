@@ -223,3 +223,7 @@ select:disabled {
 .navbar-container > button {
   margin-left: auto;
 }
+
+input[type='email'], input[type='password'] {
+  color: white;
+}
