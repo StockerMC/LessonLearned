@@ -18,6 +18,24 @@ SpeechRecognition.applyPolyfill(SpeechlySpeechRecognition);
 
 let voices: Map<string, SpeechSynthesisVoice> = new Map();
 
+const convertToDownloadFileExtension = async (
+  webmBlob: Blob
+) => {
+  // const FFmpeg = await import("@ffmpeg/ffmpeg");
+  // const ffmpeg = FFmpeg.createFFmpeg({ log: false });
+  // await ffmpeg.load();
+
+  // const inputName = "input.webm";
+
+  // ffmpeg.FS(
+  //   "writeFile",
+  //   inputName,
+  //   new Uint8Array(await webmBlob.arrayBuffer())
+  // );
+
+  const file = new File([webmBlob], 'lesson.webm');
+};
+
 export default function NewLesson() {
     const [cookies, setCookie, removeCookie] = useCookies(['input-language', 'translation-language']);
   
@@ -66,7 +84,7 @@ export default function NewLesson() {
       recordingTime,
       mediaRecorder
     } = useAudioRecorder(
-      { noiseSuppression: true, echoCancellation: true },
+      { noiseSuppression: true, echoCancellation: true},
       (exception) => { console.error(exception) }
     );
   
@@ -165,13 +183,13 @@ export default function NewLesson() {
         {/* @ts-ignore */}
         {/* <button onClick={() => SpeechRecognition.startListening({continuous: true})}>Start</button>
         <button onClick={SpeechRecognition.stopListening}>Stop</button> */}
-        <button onClick={resetTranscript}>Reset</button>
-        <button onClick={() => null}>Show Full Transcript</button>
+        <button onClick={resetTranscript} className='darken-button-hover'>Reset</button>
+        <button onClick={() => null} className='darken-button-hover'>Show Full Transcript</button>
         <button onClick={() => {
           translate(inputLanguage, translationLanguage, transcript).then(
             translated => setTranslated(translated)
           )
-        }}>Translate Text</button>
+        }} className='darken-button-hover'>Translate Text</button>
       </div>
     </div>
     <div className='captions-container'>
@@ -251,7 +269,7 @@ export default function NewLesson() {
         <input type="range" min="0.5" max="2" defaultValue="1" step="0.1" id="rate" />
       </div>
       <div>
-        <button onClick={stopRecording}>Stop and save recording: </button>
+        <button onClick={stopRecording} className='darken-button-hover'>Stop and save recording: </button>
       </div>
       {/* <p>Interim: {interimTranscript}</p> */}
     </div>

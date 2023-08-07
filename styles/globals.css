@@ -211,3 +211,15 @@ select:disabled {
   /* overflow-y: scroll; */
   max-width: 30vw;
 }
+
+.darken-button-hover:hover {
+  filter: brightness(90%);
+}
+
+.navbar-container {
+  display: flex;
+}
+
+.navbar-container > button {
+  margin-left: auto;
+}

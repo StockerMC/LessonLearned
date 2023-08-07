@@ -1,4 +1,4 @@
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { SupabaseClient, createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { randomUUID } from "crypto";
 
 interface Lesson {
@@ -7,15 +7,16 @@ interface Lesson {
     owner: string;
     summary: string;
     transcript: string;
+    users: string[];
 }
 
 export interface LessonData extends Lesson {
-    uuid: string;
+    id: string;
     created_at: string;
 }
 
-export async function saveLesson(lesson: Lesson) {
-    const supabase = createClientComponentClient()
+export async function saveLesson(supabase: SupabaseClient, lesson: Lesson) {
+    // const supabase = createClientComponentClient()
     const { data, error } = await supabase
         .from('lessons')
         .insert(lesson)
@@ -24,12 +25,18 @@ export async function saveLesson(lesson: Lesson) {
     return { data, error }
 }
 
-export async function getLessonById(id: string) {
-    const supabase = createClientComponentClient()
+export async function saveLessonRecording(supabase: SupabaseClient, blob: Blob) {
+    const file = new File([blob], 'lesson.webm');
+    return ;
+
+}
+
+export async function getLessonById(supabase: SupabaseClient, id: string) {
+    // const supabase = createClientComponentClient()
     const { data, error } = await supabase
         .from('lessons')
         .select('*')
-        // .eq('id', id)
+        .eq('id', id)
         .single();
     return { data, error };
 }
