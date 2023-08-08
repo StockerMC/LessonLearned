@@ -189,7 +189,7 @@ export default function NewLesson() {
     }, [saving])
 
     return (
-    <main className={`${styles.main} ${inter.className}`}>
+    <main className={`${styles.main} ${inter.className}`} style={{paddingBottom: '10rem'}}>
       <div className="body-container">
         <div>
           {!errorMessage ? <></> : <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', columnGap: '1em', color: 'red', marginBottom: '2em'}}><FontAwesomeIcon icon={faWarning} size='2x' /><p style={{color: 'red'}}>{errorMessage}</p></div>}
@@ -203,7 +203,7 @@ export default function NewLesson() {
           <div className={styles.topContainer}>
             <div className='options-container' style={{ flex: '1' }}>
               <div className="option">
-                <p>Select input language: </p>
+                <p style={{fontWeight: 'bold', fontSize: '1.5em', marginBottom: '.3em'}}>Select input language: </p>
                 <select onChange={e => {
                   setInputLanguage(e.target.value);
                   setCookie('input-language', e.target.value);
@@ -216,7 +216,7 @@ export default function NewLesson() {
                 >
                   {Object.entries(speechToTextLanguages).map(([key, value]) => <option value={value} key={value}>{key}</option>)}
                 </select>
-                <p>Select translation language: </p>
+                <p style={{fontWeight: 'bold', fontSize: '1.5em', marginTop: '1em', marginBottom: '.3em'}}>Select translation language: </p>
                 <select onChange={e => {
                   setTranslationLanguage(e.target.value);
                   setCookie('translation-language', e.target.value)
@@ -229,7 +229,7 @@ export default function NewLesson() {
               </div>
             </div>
             {/* <p className='start-recording-message'>Click here to start recording:</p> */}
-            <div className="microphone-container">
+            <div className="microphone-container" style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', rowGap: '1.4em'}}>
               <FontAwesomeIcon
                 className='start-recording-button fa-fw'
                 icon={listening ? faMicrophone : faMicrophoneSlash}
@@ -239,8 +239,9 @@ export default function NewLesson() {
                 onClick={() => listening ? SpeechRecognition.stopListening() : SpeechRecognition.startListening({ continuous: true, language: inputLanguage })}
               // widths={}
               />
+              <p style={{fontWeight: 'bold', fontSize: '1.5em'}}>{listening ? 'Mute' : 'Unmute'}</p>
             </div>
-            <div className='transcription-container' style={{ flex: '1' }}>
+            <div className='transcription-container' style={{ flex: '1', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', rowGap: '1em'}}>
               {/* <p>Microphone: {listening ? 'on' : 'off'}</p> */}
               {/* @ts-ignore */}
               {/* <button onClick={() => SpeechRecognition.startListening({continuous: true})}>Start</button>
@@ -257,11 +258,18 @@ export default function NewLesson() {
               }} className='darken-button-hover'>Translate Text</button>
             </div>
           </div>
+          <div style={{display: 'flex', justifyContent: 'flex-start', alignItems: 'center', columnGap: '.7em'}}>
+            <p style={{fontWeight: 'bold', fontSize: '1.5em', marginTop: '1em'}}>Playback Speed: </p>
+            <input style={{position: 'relative', top: '13px'}} type="range" min="0.5" max="2" defaultValue="1" step="0.1" id="rate" />
+          </div>
+          <hr style={{width: '100%', marginTop: '3em'}}></hr>
           <div className='captions-container'>
             <div>
-              <p>Transcript: {transcript}</p> {/* captions? */}
-              <span>Play: </span>
-              <FontAwesomeIcon
+              <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <div style={{display: 'flex', flexDirection: 'row', columnGap: '1em', justifyContent: 'center', alignItems: 'center'}}>
+                  <p style={{fontWeight: 'bold', fontSize: '2em', textDecoration: 'underline'}}>Live Transcript</p>
+
+                  <FontAwesomeIcon
                 onClick={() => {
                   const synth = window.speechSynthesis;
                   if (synth.speaking) {
@@ -287,25 +295,30 @@ export default function NewLesson() {
                   synth.speak(utterance)
                 }}
                 className='play-sound-button fa-fw'
-                icon={synth?.speaking ? faVolumeHigh : faVolumeMute}
+                icon={true ? faVolumeHigh : faVolumeMute}
                 color="red"
                 size="lg"
                 style={{ cursor: 'pointer' }}
               />
+                </div>
+                <p>{transcript}</p> {/* captions? */}
+              </div>
             </div>
-            <br></br>
-            <div>
-              <p>Translated: {translated}</p>
-              <span>Play: </span>
-              <FontAwesomeIcon
+            <hr style={{width: '100%', marginTop: '5em'}}></hr>
+            <div style={{marginTop: '5em'}}>
+              <div style={{display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+              <div style={{display: 'flex', flexDirection: 'row', columnGap: '1em', justifyContent: 'center', alignItems: 'center'}}>
+                  <p style={{fontWeight: 'bold', fontSize: '2em', textDecoration: 'underline'}}>Translated</p>
+
+                  <FontAwesomeIcon
                 onClick={() => {
                   const synth = window.speechSynthesis;
                   if (synth.speaking) {
                     synth.cancel();
                     return;
                   }
-                  const utterance = new SpeechSynthesisUtterance(translated);
-                  let voice = voices.get(translationLanguage);
+                  const utterance = new SpeechSynthesisUtterance(transcript);
+                  let voice = voices.get(inputLanguage);
                   if (!voice) {
                     for (const value of Object.values(speechToTextLanguages)) {
                       if (value.startsWith(translationLanguage)) {
@@ -316,23 +329,23 @@ export default function NewLesson() {
 
                     if (!voice) voice = voices.get('en-US') as SpeechSynthesisVoice;
                   }
+
                   utterance.voice = voice;
                   const rate = document.getElementById('rate') as any | undefined;
                   if (rate) utterance.rate = rate.value;
                   synth.speak(utterance)
                 }}
                 className='play-sound-button fa-fw'
-                icon={synth?.speaking ? faVolumeHigh : faVolumeMute}
+                icon={true ? faVolumeHigh : faVolumeMute}
                 color="red"
                 size="lg"
                 style={{ cursor: 'pointer' }}
               />
+                </div>
+                <p>{translated}</p> {/* captions? */}
+              </div>
             </div>
             <br></br>
-            <div>
-              <span>Rate: </span>
-              <input type="range" min="0.5" max="2" defaultValue="1" step="0.1" id="rate" />
-            </div>
             {/* <div>
               <button onClick={stopRecording} className='darken-button-hover'>Stop and save recording: </button>
             </div> */}

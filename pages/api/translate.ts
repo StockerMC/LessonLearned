@@ -21,6 +21,7 @@ export default async function handler(
 
     if (!user) {
         res.status(403).end('User not authenticated')
+        return
     }
 
     const query = {
@@ -55,12 +56,16 @@ export default async function handler(
     
     const data = response.data;
     let translated = '';
-    try {
-        translated = data[0][0][0];
-    } catch (error: any) {
-        translated = 'ERROR - NO DATA';
+    // try {
+    for (const d of data[0]) {
+        translated += d[0];
     }
+    // } catch (error: any) {
+        // console.error(error)
+        // translated = 'ERROR - NO DATA';
+    // }
 
+    // console.log(data)
     res.status(200).json({'translated': translated});
     return;
 

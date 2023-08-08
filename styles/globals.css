@@ -227,3 +227,44 @@ select:disabled {
 input[type='email'], input[type='password'] {
   color: white;
 }
+
+button, select {
+  background: -webkit-linear-gradient(135deg, #e27c7a, #e29b7a, #e2ab58) !important;
+  color: black;
+  font-weight: bold;
+  font-size: 1em;
+  padding: 0.6em;
+}
+
+button {
+  border: none !important;
+}
+
+input[type="text"]::placeholder {
+  color: rgb(167, 163, 163);
+}
+
+button:hover {
+  filter: brightness(95%);
+}
+
+.supabase-auth-ui_ui-button {
+  font-family: inherit !important;
+  color: rgb(28, 27, 27) !important;
+}
+
+.supabase-auth-ui_ui-anchor, .supabase-auth-ui_ui-label {
+  font-family: inherit !important;
+  color: rgb(230, 221, 221) !important;
+  font-weight: bold !important;
+}
+
+
+.c-cpTgHx:hover {
+  border-color: #e29b7a !important;
+  /* border-color: red !important; */
+}
+
+/* .supabase-auth-ui_ui-input:focus {
+  border: -webkit-linear-gradient(135deg, #e27c7a, #e29b7a, #e2ab58);
+} */

@@ -63,18 +63,20 @@ export default function Dashboard({lessons, user}: InferGetServerSidePropsType<t
             <div className='content-container'>
             {/* {user ? <Navbar /> : <></>} */}
             <HomeNavbar />
-            <p className='title'>LessonLearned</p>
-            <p className='subtitle'>Accessible learning in the classroom</p>
-            </div>
-            <div>
-                {/* <div className={styles.lessonMenuButtons}>
-                    <button className={styles.button}>Sort</button>
-                    <button onClick={() => router.push('/lesson/new')}>New +</button>
-                </div> */}
-                <div className={styles.cardContainer}>
-                  <NewCard />
-                    {lessons.map(lesson => <LessonPreviewCard lesson={lesson} key={lesson.id} />)}
-                </div>
+            <div style={{position: 'relative', top: '-60px', zIndex: '-1'}}>
+              <p className='title'>LessonLearned</p>
+              <p className='subtitle'>Accessible learning in the classroom</p>
+              </div>
+              <div>
+                  {/* <div className={styles.lessonMenuButtons}>
+                      <button className={styles.button}>Sort</button>
+                      <button onClick={() => router.push('/lesson/new')}>New +</button>
+                  </div> */}
+                  <div className={styles.cardContainer}>
+                    <NewCard />
+                      {lessons.map(lesson => <LessonPreviewCard lesson={lesson} key={lesson.id} />)}
+                  </div>
+              </div>
             </div>
         </main>
         </>

@@ -9,7 +9,6 @@ export default function Loading(props: {active: boolean}) {
     );
 
     useEffect(() => {
-        console.log(123)
         setStyle({position: 'absolute', top: '0', display: props.active ? 'flex': 'none', justifyContent: 'center', alignItems: 'center', textAlign: 'center', minHeight: '100vh'})
     }, [props.active])
 

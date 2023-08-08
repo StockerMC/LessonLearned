@@ -233,6 +233,7 @@
   flex-direction: column;
   margin-bottom: 3rem;
   row-gap: 1em;
+  color: white;
 }
 
 .lessonInputs > input {

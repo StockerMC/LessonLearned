@@ -45,8 +45,10 @@ export default function Home() {
       <main className={`${styles.main} ${inter.className}`}>
         <div className='content-container'>
           {/* {user ? <Navbar /> : <></>} */}
-          <p className='title'>LessonLearned</p>
-          <p className='subtitle'>Accessible learning in the classroom</p>
+          <div style={{marginBottom: '1em'}}>
+            <p className='title'>LessonLearned</p>
+            <p className='subtitle'>Accessible learning in the classroom</p>
+          </div>
           {/* <NewLesson /> */}
           {/* {user ? <Dashboard /> : <Auth  */}
           <Auth

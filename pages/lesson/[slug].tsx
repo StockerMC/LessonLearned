@@ -16,6 +16,8 @@ import { useCookies } from 'react-cookie';
 import { speechToTextLanguages } from '@/util/languages';
 import { config, dom } from '@fortawesome/fontawesome-svg-core';
 import { createGlobalStyle } from 'styled-components';
+import { Configuration, OpenAIApi } from 'openai';
+import axios from 'axios';
 
 const inter = Inter({ subsets: ['latin']})
 
@@ -63,6 +65,32 @@ export const getServerSideProps: GetServerSideProps<{lesson: LessonData, user: U
 let voices: Map<string, SpeechSynthesisVoice> = new Map();
 
 export default function Page({lesson, user, audio}: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  // const [loading, setLoading] = useState(false);
+  const [summarizedText, setSummarizedText] = useState('Loading...');
+  useEffect(() => {
+    if (!lesson.transcript) return;
+    console.log('loading summary')
+    if (lesson.summary) {
+      setSummarizedText(lesson.summary);
+      return;
+    }
+    axios.get('/api/summarize', { params: {text: lesson.transcript}})
+      .then(async (res) => {
+        if (res.status === 200) {
+          setSummarizedText(res?.data.summarized || 'ERROR');
+          await supabase
+            .from('lessons')
+            .update({'summary': res?.data.summarized})
+            .eq('id', lesson.id);
+        } else {
+          console.log(res.data, res.status)
+        }
+      })
+      .catch((err) => {
+        console.log(err, "An error occured");
+      });
+  });
+
   const router = useRouter()
   const supabase = useSupabaseClient();
   // const user = useUser() as User;
@@ -212,6 +240,8 @@ export default function Page({lesson, user, audio}: InferGetServerSidePropsType<
               {/* <p>Interim: {interimTranscript}</p> */}
               {/* <h2>Transcript:</h2>
               <p style={{marginTop: '1em'}}>{lesson.transcript}</p> */}
+              <h1>SUMMARIZED</h1>
+              <p>{summarizedText}</p>
             </div>
             <Loading active={saving} />
           </div>
