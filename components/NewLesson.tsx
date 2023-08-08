@@ -1,4 +1,4 @@
-import { faMicrophone, faMicrophoneSlash, faSpinner, faVolumeHigh, faVolumeMute } from '@fortawesome/free-solid-svg-icons'
+import { faMicrophone, faMicrophoneSlash, faSpinner, faVolumeHigh, faVolumeMute, faWarning } from '@fortawesome/free-solid-svg-icons'
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 
 import { useAudioRecorder } from 'react-audio-voice-recorder';
@@ -16,6 +16,7 @@ import NewLessonNavbar from './NewLessonNavbar';
 import { Lesson, saveLesson, saveLessonRecording } from '@/util/lesson';
 import { useSupabaseClient, useUser } from '@supabase/auth-helpers-react';
 import Loading from './Loading';
+import { useRouter } from 'next/router';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,32 +28,18 @@ SpeechRecognition.applyPolyfill(SpeechlySpeechRecognition);
 
 let voices: Map<string, SpeechSynthesisVoice> = new Map();
 
-const convertToDownloadFileExtension = async (
-  webmBlob: Blob
-) => {
-  // const FFmpeg = await import("@ffmpeg/ffmpeg");
-  // const ffmpeg = FFmpeg.createFFmpeg({ log: false });
-  // await ffmpeg.load();
-
-  // const inputName = "input.webm";
-
-  // ffmpeg.FS(
-  //   "writeFile",
-  //   inputName,
-  //   new Uint8Array(await webmBlob.arrayBuffer())
-  // );
-
-  const file = new File([webmBlob], 'lesson.webm');
-};
-
 export default function NewLesson() {
+    const router = useRouter();
     const supabaseClient = useSupabaseClient();
     const user = useUser();
     const [cookies, setCookie, removeCookie] = useCookies(['input-language', 'translation-language']);
     const [saving, setSaving] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [lessonId, setLessonId] = useState('ERROR')
+    const [lessonId, setLessonId] = useState('ERROR');
+    const [popup, setPopup] = useState(<></>);
+    const [open, setOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('')
 
     const {
       transcript,
@@ -119,9 +106,11 @@ export default function NewLesson() {
       if (!recordingBlob) return setSaving(false);
       if (!saving) return;
       async function callback() {
+        console.log('saving recording')
         const { data, error } = await saveLessonRecording(supabaseClient, recordingBlob, lessonId)
         console.log(data, error)
         setSaving(false);
+        router.push(`/lesson/${lessonId}`)
       }
       callback();
       // recordingBlob will be present at this point after 'stopRecording' has been called
@@ -163,6 +152,25 @@ export default function NewLesson() {
     useEffect(() => {
       async function callback() {
         if (!user) return;
+        if (!transcript) {
+          setErrorMessage('Please record audio before saving the lesson.');
+        } else {
+          setErrorMessage('');
+        }
+
+        if (title && description) {
+          setErrorMessage('');
+        } else if (!title && !description) {
+          setErrorMessage('Please enter the lesson name and description before saving');
+          return setSaving(false);
+        } else if (!title) {
+          setErrorMessage('Please enter the lesson name before saving.');
+          return setSaving(false);
+        } else if (!description) {
+          setErrorMessage('Please enter the lesson description before saving.');
+          return setSaving(false);
+        }
+
         const lesson: Lesson = {
           'name': title,
           'description': description,
@@ -183,6 +191,9 @@ export default function NewLesson() {
     return (
     <main className={`${styles.main} ${inter.className}`}>
       <div className="body-container">
+        <div>
+          {!errorMessage ? <></> : <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', columnGap: '1em', color: 'red', marginBottom: '2em'}}><FontAwesomeIcon icon={faWarning} size='2x' /><p style={{color: 'red'}}>{errorMessage}</p></div>}
+        </div>
         <NewLessonNavbar setSaving={setSaving}/>
         <div>
           <div className={styles.lessonInputs}>

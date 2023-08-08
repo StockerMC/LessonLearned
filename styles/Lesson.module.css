@@ -7,7 +7,16 @@
     min-height: 100vh;
   }
   
-  .description {
+.createdAt {
+    font-size: 110%;
+    margin-top: .5em;
+}
+
+.description {
+    margin-top: 1em;
+}
+
+  /* .description {
     display: inherit;
     justify-content: inherit;
     align-items: inherit;
@@ -33,7 +42,7 @@
     border: 1px solid rgba(var(--callout-border-rgb), 0.3);
     border-radius: var(--border-radius);
   }
-  
+   */
   .code {
     font-weight: 700;
     font-family: var(--font-mono);

@@ -1,3 +1,17 @@
 .container {
     margin-bottom: 2rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.container > button {
+    padding: 1em;
+}
+
+.container > button:hover {
+    filter: brightness(95%);
+    /* cursor: pointer; */
 }

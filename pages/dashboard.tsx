@@ -2,19 +2,21 @@ import { User } from "@supabase/supabase-js";
 import { LessonData, getLessonsForUser } from "../util/lesson";
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { createPagesServerClient } from "@supabase/auth-helpers-nextjs";
-import LessonPreviewCard from "@/components/LessonPreviewCard";
+import LessonPreviewCard, { NewCard } from "@/components/LessonPreviewCard";
 import Head from "next/head";
 import { Inter } from "next/font/google";
 import HomeNavbar from "@/components/HomeNavbar";
 import { useRouter } from "next/router";
 import styles from '@/styles/Dashboard.module.css';
+import { config, dom } from "@fortawesome/fontawesome-svg-core";
+import { createGlobalStyle } from "styled-components";
 
 // // add fontawesome css
 
-// config.autoAddCss = false;
-// const GlobalStyles = createGlobalStyle`
-//     ${dom.css()}
-// `;
+config.autoAddCss = false;
+const GlobalStyles = createGlobalStyle`
+    ${dom.css()}
+`;
  
 export const getServerSideProps: GetServerSideProps<{lessons: LessonData[], user: User}> = async (ctx) => {
     // await saveLesson({name: 'Quadratic Formula', description: 'A', transcript: 'A', summary: 'A', owner: 'Aayan'})
@@ -50,7 +52,7 @@ export default function Dashboard({lessons, user}: InferGetServerSidePropsType<t
     const router = useRouter();
     return (
         <>
-        {/* <GlobalStyles /> */}
+        <GlobalStyles />
         <Head>
             <title>LessonLearned - Dashboard</title>
             <meta name="description" content="Revolutionizing learning in the classroom" />
@@ -65,12 +67,12 @@ export default function Dashboard({lessons, user}: InferGetServerSidePropsType<t
             <p className='subtitle'>Accessible learning in the classroom</p>
             </div>
             <div>
-                <div className={styles.lessonMenuButtons}>
+                {/* <div className={styles.lessonMenuButtons}>
                     <button className={styles.button}>Sort</button>
-                    {/* or just fontawesome plus icon */}
-                    <button className={styles.button} onClick={() => router.push('/lesson/new')}>New +</button>
-                </div>
+                    <button onClick={() => router.push('/lesson/new')}>New +</button>
+                </div> */}
                 <div className={styles.cardContainer}>
+                  <NewCard />
                     {lessons.map(lesson => <LessonPreviewCard lesson={lesson} key={lesson.id} />)}
                 </div>
             </div>

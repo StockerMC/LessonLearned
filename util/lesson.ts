@@ -51,3 +51,11 @@ export async function getLessonsForUser(supabase: SupabaseClient, user_id: strin
         .contains('users', [user_id])
     return { data, error }
 }
+
+export async function getAudioById(supabase: SupabaseClient, lesson_id: string) {
+    const { data, error } = await supabase
+        .storage
+        .from('lesson-recordings')
+        .createSignedUrl(`${lesson_id}.webm`, 60 * 60 * 24)
+    return { data, error }
+}
