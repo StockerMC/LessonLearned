@@ -14,7 +14,7 @@ export default function LessonNavbar(props: {setSaving: (value: boolean) => void
     const [saved, setSaved] = useState(lesson.users.includes(user.id));
 
     return (
-        <div className={"flex row " + styles.container}>
+        <div className={"flex row " + styles.container} style={{zIndex: 1}}>
             <button onClick={() => router.push('/dashboard')}>Back</button>
             <button onClick={() => {
                 if (saving) return;

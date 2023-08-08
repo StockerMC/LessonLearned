@@ -10,6 +10,7 @@ export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
   ) {
+    return res.status(200).json({'summarized': 'Loading...'})
       const supabaseServerClient = createPagesServerClient({req, res});
       const {
           data: { user },

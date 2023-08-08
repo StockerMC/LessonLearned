@@ -13,11 +13,12 @@ import LessonNavbar from '@/components/LessonNavbar';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVolumeHigh, faVolumeMute } from '@fortawesome/free-solid-svg-icons';
 import { useCookies } from 'react-cookie';
-import { speechToTextLanguages } from '@/util/languages';
+import { speechToTextLanguages, translationLanguages } from '@/util/languages';
 import { config, dom } from '@fortawesome/fontawesome-svg-core';
 import { createGlobalStyle } from 'styled-components';
 import { Configuration, OpenAIApi } from 'openai';
 import axios from 'axios';
+import translate from '@/util/translator';
 
 const inter = Inter({ subsets: ['latin']})
 
@@ -130,6 +131,15 @@ export default function Page({lesson, user, audio}: InferGetServerSidePropsType<
   const [translationLanguage, setTranslationLanguage] = useState(cookies['translation-language'] ?? 'en');
   const [translated, setTranslated] = useState('');
 
+  translate(inputLanguage, translationLanguage, lesson.transcript).then(
+    translated => setTranslated(translated)
+  )
+
+  useEffect(() => {
+    translate(inputLanguage, translationLanguage, lesson.transcript).then(
+      translated => setTranslated(translated)
+    )
+  }, [translationLanguage])
 
   return (
       <>
@@ -162,6 +172,17 @@ export default function Page({lesson, user, audio}: InferGetServerSidePropsType<
             <div>
               <div>
                 <h3>Transcript Play Speed: <input style={{position: 'relative', top: '2px'}}  type="range" min="0.5" max="2" defaultValue="1" step="0.1" id="rate" /></h3>
+                <div style={{marginTop: '1em', display: 'flex', justifyContent: 'center', alignItems: 'center', columnGap: '.7em'}}>
+                  <h3>Translation Language: </h3>
+                  <select onChange={e => {
+                    setTranslationLanguage(e.target.value);
+                    setCookie('translation-language', e.target.value)
+                  }}
+                    defaultValue={translationLanguage}
+                  >
+                    {Object.entries(translationLanguages).map(([key, value]) => <option value={value} key={value}>{key}</option>)}
+                  </select>
+                </div>
               </div>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1em', marginTop: '2em'}}>
                   <h2>Original Transcript:</h2>
@@ -197,7 +218,7 @@ export default function Page({lesson, user, audio}: InferGetServerSidePropsType<
                   style={{ cursor: 'pointer' }}
                 />
                 </div>
-                <p style={{marginTop: '0.6em'}}>{lesson.transcript}</p> {/* captions? */}
+                <p style={{marginTop: '0.6em', fontSize: '120%'}}>{lesson.transcript}</p> {/* captions? */}
               </div>
               <div style={{marginTop: '3em'}}>
                 <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1em'}}>
@@ -233,6 +254,7 @@ export default function Page({lesson, user, audio}: InferGetServerSidePropsType<
                   style={{ cursor: 'pointer' }}
                 />
                 </div>
+                <p style={{marginTop: '0.6em', fontSize: '120%'}}>{translated}</p> {/* captions? */}
               </div>
               {/* <div>
                 <button onClick={stopRecording} className='darken-button-hover'>Stop and save recording: </button>
@@ -240,8 +262,10 @@ export default function Page({lesson, user, audio}: InferGetServerSidePropsType<
               {/* <p>Interim: {interimTranscript}</p> */}
               {/* <h2>Transcript:</h2>
               <p style={{marginTop: '1em'}}>{lesson.transcript}</p> */}
-              <h1>SUMMARIZED</h1>
-              <p>{summarizedText}</p>
+              <div style={{marginTop: '3em'}}>
+                <h1>Summarized:</h1>
+                <p style={{ fontSize: '120%', marginTop: '0.6em'}}>{summarizedText}</p>
+              </div>
             </div>
             <Loading active={saving} />
           </div>
